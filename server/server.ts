@@ -1,22 +1,11 @@
 import express from "express";
 import cors from "cors";
-import { PrismaClient } from "@prisma/client";
+import { Movie, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 async function main() {
   // ... you will write your Prisma Client queries here
-  /* 
-  const updateMovie = await prisma.movie.update({
-    where: { id: 3 },
-    data: { title: "fatestay", details: "sword of promised victory" },
-  });
-
-
-  const getUsers = await prisma.user.findMany();
-  const getMovies = await prisma.movie.findMany();
-  console.log(getUsers, getMovies);
-  */
 }
 
 main()
@@ -59,28 +48,112 @@ app.get("/search/:query", (req, res) => {
     .then((response) => res.send(response));
 });
 
-/*
 app.get("/movies/:id", (req, res) => {
-    req.params.id
-    prisma.movie
-    
-      .findMany()
-      .then((response) => res.send(response));
-  });
-
-  
-app.get("/users/:id", (req, res) => {
-  req.params.id
-  prisma.user
-    .findMany()
+  prisma.movie
+    .findUnique({
+      where: {
+        id: Number(req.params.id),
+      },
+    })
     .then((response) => res.send(response));
 });
-*/
 
-app.post("/favorite", (req, res) => res.send("pinged"));
+app.get("/users/:id", (req, res) => {
+  prisma.user
+    .findUnique({
+      where: {
+        id: Number(req.params.id),
+      },
+    })
+    .then((response) => res.send(response));
+});
+
+app.get("/users/:id/favorites", (req, res) => {
+  prisma.user
+    .findUnique({
+      where: {
+        id: Number(req.params.id),
+      },
+      include: {
+        favorites: true,
+      },
+    })
+    .then((response) => res.send(response));
+});
+
+//this needs an update
+//movies/:id has both a get and post req
+app.post("/movies/:movieId/:userId", async (req, res) => {
+  const id = req.params.userId;
+  const movie = await prisma.movie.findUnique({
+    where: {
+      id: Number(req.params.movieId),
+    },
+    include: {
+      favoritedBy: true,
+    },
+  });
+
+  if (movie) {
+    if (
+      movie.favoritedBy.findIndex((currentElement, index) => {
+        if (currentElement.id === Number(id)) {
+          return true;
+        }
+      }) == -1
+    ) {
+      prisma.movie
+        .update({
+          where: {
+            id: Number(req.params.movieId),
+          },
+          data: {
+            favoritedBy: {
+              connect: { id: Number(req.params.userId) },
+            },
+          },
+        })
+        .then((response) => res.send(response));
+      // there's no favorite. create a favorite
+    } else {
+      prisma.movie
+        .update({
+          where: {
+            id: Number(req.params.movieId),
+          },
+          data: {
+            favoritedBy: {
+              disconnect: { id: Number(req.params.userId) },
+            },
+          },
+        })
+        .then((response) => res.send(response));
+      // favorite found. remove favorite
+    }
+  }
+});
 
 const PORT = 4000;
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => console.log(`server is running on port ${PORT}`));
 }
 export default app;
+
+//includes
+
+/*
+app.post("/movies/:movieId/:userId", (req, res) => {
+  prisma.movie
+    .update({
+      where: {
+        id: Number(req.params.movieId),
+      },
+      data: {
+        favoritedBy: {
+          connect: { id: Number(req.params.userId) },
+        },
+      },
+    })
+    .then((response) => res.send(response));
+});
+*/
