@@ -80,5 +80,7 @@ app.get("/users/:id", (req, res) => {
 app.post("/favorite", (req, res) => res.send("pinged"));
 
 const PORT = 4000;
-
-app.listen(PORT, () => console.log(`server is running on port ${PORT}`));
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => console.log(`server is running on port ${PORT}`));
+}
+export default app;

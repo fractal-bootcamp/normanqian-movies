@@ -17,7 +17,7 @@ const Search = () => {
               .then((response) => setResult(response.data))
           }
         >
-          Search
+          Search Movies
         </button>
 
         {result.map((element) => (
@@ -34,16 +34,20 @@ function App() {
   return (
     <>
       <div className="card">
-        <button
-          onClick={() =>
-            axios
-              .get("http://localhost:4000/")
-              .then((response) => console.log(response.data))
-          }
-        >
-          testCall
-        </button>
+        <p>Norman Qian</p>
+        <p>Movies Page</p>
+        <img></img>
       </div>
+      <div className="card">
+        <p>Favorites</p>
+        <ul>
+          <li>asdf</li>
+          <li>gfdgsdfg</li>
+          <li>sdfgsd</li>
+        </ul>
+      </div>
+      <Search></Search>
+      <br />
       <button
         onClick={() =>
           axios
@@ -51,7 +55,7 @@ function App() {
             .then((response) => console.log(response.data))
         }
       >
-        getUsers
+        Browse Users
       </button>
       <button
         onClick={() =>
@@ -60,10 +64,8 @@ function App() {
             .then((response) => console.log(response.data))
         }
       >
-        getMovies
+        Browse Movies
       </button>
-
-      <Search></Search>
     </>
   );
 }
