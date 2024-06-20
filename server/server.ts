@@ -43,6 +43,10 @@ app.get("/users", (req, res) => {
   prisma.user.findMany().then((response) => res.send(response));
 });
 
+app.get("/search", (req, res) => {
+  res.send();
+});
+
 app.get("/search/:query", (req, res) => {
   prisma.movie
     .findMany({

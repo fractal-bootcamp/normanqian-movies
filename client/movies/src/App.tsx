@@ -4,6 +4,26 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import axios from "axios";
 
+const Search = () => {
+  const [query, setQuery] = useState("");
+  return (
+    <>
+      <div>
+        <input onChange={(event) => setQuery(event.target.value)}></input>
+        <button
+          onClick={() =>
+            axios
+              .get(`http://localhost:4000/search/${query}`)
+              .then((response) => console.log(response.data))
+          }
+        >
+          pressbutton
+        </button>
+      </div>
+    </>
+  );
+};
+
 function App() {
   const [count, setCount] = useState(0);
 
@@ -31,13 +51,27 @@ function App() {
         >
           apicall
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <button
+        onClick={() =>
+          axios
+            .get("http://localhost:4000/users")
+            .then((response) => console.log(response.data))
+        }
+      >
+        callAPI
+      </button>
+      <button
+        onClick={() =>
+          axios
+            .get("http://localhost:4000/movies")
+            .then((response) => console.log(response.data))
+        }
+      >
+        callAPI2
+      </button>
+
+      <Search></Search>
     </>
   );
 }
