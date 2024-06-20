@@ -138,22 +138,3 @@ if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => console.log(`server is running on port ${PORT}`));
 }
 export default app;
-
-//includes
-
-/*
-app.post("/movies/:movieId/:userId", (req, res) => {
-  prisma.movie
-    .update({
-      where: {
-        id: Number(req.params.movieId),
-      },
-      data: {
-        favoritedBy: {
-          connect: { id: Number(req.params.userId) },
-        },
-      },
-    })
-    .then((response) => res.send(response));
-});
-*/
