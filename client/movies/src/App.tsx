@@ -2,6 +2,76 @@ import { useState } from "react";
 import "./App.css";
 import axios from "axios";
 
+const Favorites = () => {
+  const [favorites, setFavorites] = useState([]);
+  return (
+    <div>
+      <button
+        onClick={() =>
+          axios
+            .get("http://localhost:4000/users/2/favorites")
+            .then((response) => setFavorites(response.data.favorites))
+        }
+      >
+        See Favorites
+      </button>
+      {favorites.map((element, index) => (
+        <div key={index}>
+          {element.title}
+          {element.id}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const UserList = () => {
+  const [userList, setUserList] = useState([]);
+  return (
+    <div>
+      <button
+        onClick={() =>
+          axios
+            .get("http://localhost:4000/users")
+            .then((response) => setUserList(response.data))
+        }
+      >
+        Browse Users
+      </button>
+      {userList.map((element, index) => (
+        <div key={index}>
+          {element.name}
+          {element.id}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const MovieList = () => {
+  const [movieList, setMovieList] = useState([]);
+  return (
+    <div>
+      <button
+        onClick={() =>
+          axios
+            .get("http://localhost:4000/movies")
+            .then((response) => setMovieList(response.data))
+        }
+      >
+        Browse Movies
+      </button>
+      {movieList.map((element, index) => (
+        <div key={index}>
+          {element.title}
+          {element.id}
+          {element.details}
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const Search = () => {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState([]);
@@ -20,8 +90,8 @@ const Search = () => {
           Search Movies
         </button>
 
-        {result.map((element) => (
-          <div>{element.title}</div>
+        {result.map((element, index) => (
+          <div key={index}>{element.title}</div>
         ))}
       </div>
     </>
@@ -38,33 +108,43 @@ function App() {
         <p>Movies Page</p>
         <img></img>
       </div>
-      <div className="card">
-        <p>Favorites</p>
-        <ul>
-          <li>asdf</li>
-          <li>gfdgsdfg</li>
-          <li>sdfgsd</li>
-        </ul>
+
+      <div style={{ display: "flex" }}>
+        <Favorites></Favorites>
+
+        <UserList></UserList>
+        <MovieList></MovieList>
       </div>
+
       <Search></Search>
-      <br />
+
       <button
         onClick={() =>
           axios
-            .get("http://localhost:4000/users")
+            .get("http://localhost:4000/users/1")
             .then((response) => console.log(response.data))
         }
       >
-        Browse Users
+        Specific User
       </button>
       <button
         onClick={() =>
           axios
-            .get("http://localhost:4000/movies")
+            .get("http://localhost:4000/movies/1")
             .then((response) => console.log(response.data))
         }
       >
-        Browse Movies
+        Specific Movie
+      </button>
+
+      <button
+        onClick={() =>
+          axios
+            .post("http://localhost:4000/movies/3/2")
+            .then((response) => console.log(response.data))
+        }
+      >
+        PostRequestHere
       </button>
     </>
   );
